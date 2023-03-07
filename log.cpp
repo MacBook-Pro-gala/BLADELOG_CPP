@@ -6,14 +6,16 @@ HANDLE           LOG::mFileHandle = INVALID_HANDLE_VALUE;
 mutex            LOG::log_mutex;
 CRITICAL_SECTION LOG::criticalSection;
 int              LOG::writtenSize = 0;
+int              LOG::tcolor = 0;
+LOGTARGET        LOG::logTarget = LOG_TARGET_NONE;
 
-LOG::LOG()
+LOG::LOG(LOGTARGET t)
 {
 	// 初始化
 	//输出至文件
 	//init(LOG_LEVEL_NONE, LOG_TARGET_FILE);
 	//输出至控制台
-	init(LOG_LEVEL_NONE, LOG_TARGET_CONSOLE);
+	init(LOG_LEVEL_NONE, t);
 } 
 
 void LOG::init(LOGLEVEL loglevel, LOGTARGET logtarget)
@@ -33,14 +35,14 @@ void LOG::uninit()
 	DeleteCriticalSection(&criticalSection);
 }
 
-LOG* LOG::getInstance()
+LOG* LOG::getInstance(LOGTARGET t)
 {
 	if (NULL == Log)
 	{
 		log_mutex.lock();
 		if (NULL == Log)
 		{
-			Log = new LOG();
+			Log = new LOG(t);
 		}
 		log_mutex.unlock();
 	}
@@ -59,12 +61,12 @@ void LOG::setLogLevel(LOGLEVEL iLogLevel)
 
 LOGTARGET LOG::getLogTarget()
 {
-	return this->logTarget;
+	return logTarget;
 }
 
 void LOG::setLogTarget(LOGTARGET iLogTarget)
 {
-	this->logTarget = iLogTarget;
+	logTarget = iLogTarget;
 }
 
 int LOG::createFile()
@@ -169,15 +171,19 @@ int LOG::writeLog(
 	logLevel = "LOG_LEVEL_NONE";
 	if (loglevel == LOG_LEVEL_DEBUG){
 		logLevel = "DEBUG";
+		tcolor = 0;
 	}
 	else if (loglevel == LOG_LEVEL_INFO){
 		logLevel = "INFO";
+		tcolor = 1;
 	}
 	else if (loglevel == LOG_LEVEL_WARNING){
 		logLevel = "WARNING";
+		tcolor = 2;
 	}
 	else if (loglevel == LOG_LEVEL_ERROR){
 		logLevel = "ERROR";
+		tcolor = 3;
 	}
 	
 	// [进程号][线程号][Log级别][文件名][函数名:行号]
@@ -209,18 +215,49 @@ int LOG::writeLog(
 	return 0;
 }
 
+void SetColor(int fore = 7, int back = 0)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (back << 4) + fore);
+}
+
 void LOG::outputToTarget()
 {
-	if (LOG::getInstance()->getLogTarget() & LOG_TARGET_FILE)
+	if (getLogTarget() & LOG_TARGET_FILE)
 	{
 		SetFilePointer(mFileHandle, 0, NULL, FILE_END);
 		DWORD dwBytesWritten = 0;
 		WriteFile(mFileHandle, logBuffer.c_str(), logBuffer.length(), &dwBytesWritten, NULL);
 		FlushFileBuffers(mFileHandle);
 	}
-	if (LOG::getInstance()->getLogTarget() & LOG_TARGET_CONSOLE)
+	if (getLogTarget() & LOG_TARGET_CONSOLE)
 	{
-		printf("%s", logBuffer.c_str());
+		switch (tcolor)
+		{
+		default:
+			break;
+		case 0:
+			SetColor(9, 0);
+			printf("%s", logBuffer.c_str());
+			SetColor(7, 0);
+			break;
+		case 1:
+			SetColor(7, 0);
+			printf("%s", logBuffer.c_str());
+			SetColor(7, 0);
+			break;
+		case 2:
+			SetColor(6, 0);
+			printf("%s", logBuffer.c_str());
+			SetColor(7, 0);
+			break;
+		case 3:
+			SetColor(12, 0);
+			printf("%s", logBuffer.c_str());
+			SetColor(7, 0);
+			break;    
+		}
+		
+		
 	}
 
 	// 清除buffer

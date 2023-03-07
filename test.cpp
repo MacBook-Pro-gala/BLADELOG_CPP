@@ -17,12 +17,15 @@ unsigned int __stdcall func(void *pPM)
 	LOG_INFO("g_num = %d", g_num);
 	LOG_DEBUG("fsafas");
 	LOG_INFO("exit");
+	LOG_WARNING("!!!");
+	LOG_ERROR("xxx");
 	return 0;
 }
 
 int main()
 {
-	LOG *logger = LOG::getInstance();
+	//LOG *logger = LOG::getInstance(LOG_TARGET_CONSOLE);
+	BLADE_CONSOLE_LOG();
 	HANDLE  handle[THREAD_NUM];
 
 	//Ïß³Ì±àºÅ

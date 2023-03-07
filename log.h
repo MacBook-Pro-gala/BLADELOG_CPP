@@ -35,6 +35,8 @@ enum LOGTARGET
 #define EXIT()  LOG_INFO("exit")
 #define FAIL()  LOG_ERROR("fail")
 
+#define BLADE_CONSOLE_LOG() LOG *logger = LOG::getInstance(LOG_TARGET_CONSOLE)
+#define BLADE_FILE_LOG() LOG *logger = LOG::getInstance(LOG_TARGET_FILE)
 // 单个日志文件最大存储
 #define MAX_SIZE 2*1024*1024  // 2M
 
@@ -51,15 +53,15 @@ public:
 	// file
 	int createFile();
 
-	static LOG* getInstance();
+	static LOG* getInstance(LOGTARGET t);
 
 	// Log级别
 	LOGLEVEL getLogLevel();
 	void setLogLevel(LOGLEVEL loglevel);
 
 	// Log输出位置
-	LOGTARGET getLogTarget();
-	void setLogTarget(LOGTARGET logtarget);
+	static LOGTARGET getLogTarget();
+	static void setLogTarget(LOGTARGET logtarget);
 
 	// 打log
 	static int writeLog(
@@ -74,7 +76,7 @@ public:
 	static void outputToTarget();
 
 private:
-	LOG();
+	LOG(LOGTARGET t);
 	~LOG();
 	static LOG* Log;
 
@@ -92,10 +94,12 @@ private:
 	LOGLEVEL logLevel;
 
 	// Log输出位置
-	LOGTARGET logTarget;
+	static LOGTARGET logTarget;
 
 	// Handle
 	static HANDLE mFileHandle;
+
+	static int tcolor;
 };
 
 
