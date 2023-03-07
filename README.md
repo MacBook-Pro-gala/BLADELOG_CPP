@@ -10,6 +10,7 @@ Based on the https://blog.csdn.net/sinat_21107433/article/details/103102542
 1. Color terminal output is supported
 2. Custom log output location (terminal/file)
 3. support Unicode
+4. A more comprehensive definition
 
 
 ## Install
