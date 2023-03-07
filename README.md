@@ -1,23 +1,28 @@
 # BLADELOG
-C++ logging library，supports Unicode as well as multithreading
+C++ logging library
 
 
 ## Platforms
 1. Windows 10-11
+
 ## Features
 1. Color terminal output is supported
 2. Custom log output location (terminal/file)
+3. support Unicode
+
+
+## Install
 
 ## Usage samples
 ```cpp
 #include "log.h"
 
-/*非线程安全 单例模式*/
+
 #include <process.h>
 #include <Windows.h>
 #define THREAD_NUM 5
 
-// 全局资源变量
+
 int g_num = 0;
 
 unsigned int __stdcall func(void *pPM)
@@ -36,22 +41,18 @@ unsigned int __stdcall func(void *pPM)
 
 int main()
 {
-	//LOG *logger = LOG::getInstance(LOG_TARGET_CONSOLE);
-	BLADE_CONSOLE_LOG();
+	//BLADE_FILE_LOG(); //输出至文件
+	BLADE_CONSOLE_LOG(); //输出至终端
 	HANDLE  handle[THREAD_NUM];
 
-	//线程编号
+
 	int threadNum = 0;
 	while (threadNum < THREAD_NUM)
 	{
 		handle[threadNum] = (HANDLE)_beginthreadex(NULL, 0, func, NULL, 0, NULL);
-		//等子线程接收到参数时主线程可能改变了这个i的值
 		threadNum++;
 	}
-	//保证子线程已全部运行结束
 	WaitForMultipleObjects(THREAD_NUM, handle, TRUE, INFINITE);
-
-	//system("pause");
 	return 0;
 }
 
