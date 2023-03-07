@@ -1,6 +1,10 @@
 # BLADELOG
-A cpp log class that supports Unicode encoding as well as multithreading
+C++ logging library，supports Unicode as well as multithreading
 
-## d
+
+## Platforms
+1. Windows 10-11
+## Features
 1. Color terminal output is supported
+2. Custom log output location (terminal/file)
 
