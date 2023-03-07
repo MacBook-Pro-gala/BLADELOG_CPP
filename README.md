@@ -1,5 +1,6 @@
 # BLADELOG
 C++ logging library
+Based on the https://blog.csdn.net/sinat_21107433/article/details/103102542
 
 
 ## Platforms
