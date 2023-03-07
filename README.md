@@ -3,6 +3,7 @@ C++ logging library
 Based on the https://blog.csdn.net/sinat_21107433/article/details/103102542
 
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/MacBook-Pro-gala/BLADELOG_CPP)
+![GitHub Repo stars](https://img.shields.io/github/stars/MacBook-Pro-gala/BLADELOG_CPP?style=social)
 
 ## Platforms
 1. Windows 10-11
