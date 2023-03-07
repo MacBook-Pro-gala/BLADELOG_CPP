@@ -13,7 +13,7 @@ Based on the https://blog.csdn.net/sinat_21107433/article/details/103102542
 
 
 ## Install
-
+Copy all files to the project
 ## Usage samples
 ```cpp
 #include "log.h"
